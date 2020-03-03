@@ -1,5 +1,6 @@
 const express = require.fromParentEnvironment('express')
 const { Nuxt } = require.fromParentEnvironment('nuxt')
+const pkg = require.fromParentEnvironment('./package.json')
 
 const app = express()
 
@@ -18,7 +19,7 @@ async function creatServer() {
 
   // define binary type for response
   // if includes, will return base64 encoded, very useful for images
-  app.binaryTypes = config.binaryTypes || ['*/*']
+  app.binaryTypes = pkg.binaryTypes || ['*/*']
 
   return app
 }
