@@ -1,6 +1,5 @@
 NuxtjsFunc:
-  # component: '@serverless/tencent-nuxtjs'
-  component: ../
+  component: '@serverless/tencent-nuxtjs'
   inputs:
     functionName: nuxtjs-function
     region: ap-guangzhou
