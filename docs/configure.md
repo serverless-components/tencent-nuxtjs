@@ -5,11 +5,11 @@
 ```yml
 # serverless.yml
 
-egg:
+nuxtjs:
   component: '@serverless/tencent-nuxtjs'
   inputs:
     region: ap-guangzhou
-    functionName: egg-function
+    functionName: nuxtjs-function
     serviceName: mytest
     serviceId: service-np1uloxw
     code: ./
