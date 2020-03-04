@@ -8,7 +8,7 @@ const app = express()
 const config = require.fromParentEnvironment('./nuxt.config.js')
 config.dev = false
 
-async function creatServer() {
+async function createServer() {
   // Init Nuxt.js
   const nuxt = new Nuxt(config)
 
@@ -24,4 +24,4 @@ async function creatServer() {
   return app
 }
 
-module.exports = creatServer
+module.exports = createServer
