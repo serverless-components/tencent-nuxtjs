@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.3...v0.2.0) (2020-03-04)
+
+
+### Bug Fixes
+
+* add user can custom sls.js ([57212c7](https://github.com/serverless-components/tencent-nuxtjs/commit/57212c70d73272f4f96cdcf5dc60fc1297900f12))
+* user can customize sls.js ([4e2e16d](https://github.com/serverless-components/tencent-nuxtjs/commit/4e2e16dc8f62800cb164c503b52098ec33ad2506))
+
 ### [0.1.3](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.2...v0.1.3) (2020-03-03)
 
 
