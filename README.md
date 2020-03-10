@@ -1,3 +1,5 @@
+[![Serverless Nuxtjs Tencent Cloud](https://img.serverlesscloud.cn/2020310/1583829094342-nuxt.js%20_%E9%95%BF.png)](http://serverless.com)
+
 # 腾讯云 Nuxt.js Serverless Component
 
 [![npm](https://img.shields.io/npm/v/%40serverless%2Ftencent-nuxtjs)](http://www.npmtrends.com/%40serverless%2Ftencent-nuxtjs)
