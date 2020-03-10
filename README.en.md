@@ -23,7 +23,8 @@
 #### Init Nuxt.js Project
 
 ```bash
-$ npm init next-app
+$ npx create-nuxt-app serverlesss-nuxtjs
+$ cd serverlesss-nuxtjs
 ```
 
 Add `express` dependency：

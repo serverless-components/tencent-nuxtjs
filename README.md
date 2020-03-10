@@ -22,7 +22,8 @@
 #### 初始化 Nuxt.js 项目
 
 ```bash
-$ npm init next-app
+$ npx create-nuxt-app serverlesss-nuxtjs
+$ cd serverlesss-nuxtjs
 ```
 
 添加 `express` 依赖：
