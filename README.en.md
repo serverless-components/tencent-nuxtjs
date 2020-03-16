@@ -109,29 +109,42 @@ $ sls --debug
   DEBUG ─ Creating the template's components graph.
   DEBUG ─ Syncing template state.
   DEBUG ─ Executing the template's components graph.
+  DEBUG ─ Generating serverless handler...
+  DEBUG ─ Generated serverless handler successfully.
   DEBUG ─ Compressing function nuxtjs-function file to /Users/yugasun/Desktop/Develop/serverless/tencent-nuxtjs/example/.serverless/nuxtjs-function.zip.
   DEBUG ─ Compressed function nuxtjs-function file successful
-  DEBUG ─ Uploading service package to cos[sls-cloudfunction-ap-guangzhou-code]. sls-cloudfunction-default-nuxtjs-function-1583031760.zip
+  DEBUG ─ Uploading service package to cos[sls-cloudfunction-ap-guangzhou-code]. sls-cloudfunction-default-nuxtjs-function-1584350378.zip
   DEBUG ─ Uploaded package successful /Users/yugasun/Desktop/Develop/serverless/tencent-nuxtjs/example/.serverless/nuxtjs-function.zip
   DEBUG ─ Creating function nuxtjs-function
-
+  nuxtjs-function [████████████████████████████████████████] 100% | ETA: 0s | Speed: 1502.16k/s
   DEBUG ─ Created function nuxtjs-function successful
   DEBUG ─ Setting tags for function nuxtjs-function
   DEBUG ─ Creating trigger for function nuxtjs-function
   DEBUG ─ Deployed function nuxtjs-function successful
-  DEBUG ─ Starting API-Gateway deployment with name NuxtjsFunc.TencentApiGateway in the ap-guangzhou region
-  DEBUG ─ Service with ID service-gt5jq7t2 created.
-  DEBUG ─ API with id api-i4clsxoq created.
-  DEBUG ─ Deploying service with id service-gt5jq7t2.
-  DEBUG ─ Deployment successful for the api named NuxtjsFunc.TencentApiGateway in the ap-guangzhou region.
+  DEBUG ─ Starting API-Gateway deployment with name ap-guangzhou-apigateway in the ap-guangzhou region
+  DEBUG ─ Service with ID service-dxcq0xuu created.
+  DEBUG ─ API with id api-b83j9sme created.
+  DEBUG ─ Deploying service with id service-dxcq0xuu.
+  DEBUG ─ Deployment successful for the api named ap-guangzhou-apigateway in the ap-guangzhou region.
 
   NuxtjsFunc:
-    region:              ap-guangzhou
     functionName:        nuxtjs-function
-    apiGatewayServiceId: service-gt5jq7t2
-    url:                 https://service-gt5jq7t2-1251556596.gz.apigw.tencentcs.com/release/
+    functionOutputs:
+      ap-guangzhou:
+        Name:        nuxtjs-function
+        Runtime:     Nodejs8.9
+        Handler:     serverless-handler.handler
+        MemorySize:  128
+        Timeout:     30
+        Region:      ap-guangzhou
+        Namespace:   default
+        Description: This is a template function
+    region:              ap-guangzhou
+    apiGatewayServiceId: service-dxcq0xuu
+    url:                 https://service-dxcq0xuu-1251556596.gz.apigw.tencentcs.com/release/
+    cns:                 (empty array)
 
-  45s › NuxtjsFunc › done
+  38s › NuxtjsFunc › done
 ```
 
 > Notice: `sls` is short for `serverless` command.
@@ -144,13 +157,11 @@ $ sls --debug
 $ sls remove --debug
 
   DEBUG ─ Flushing template state and removing all components.
-  DEBUG ─ Removing function
-  DEBUG ─ Request id
   DEBUG ─ Removed function nuxtjs-function successful
-  DEBUG ─ Removing any previously deployed API. api-i4clsxoq
-  DEBUG ─ Removing any previously deployed service. service-gt5jq7t2
+  DEBUG ─ Removing any previously deployed API. api-b83j9sme
+  DEBUG ─ Removing any previously deployed service. service-dxcq0xuu
 
-  10s › NuxtjsFunc › done
+  8s › NuxtjsFunc › done
 ```
 
 ### More Components
