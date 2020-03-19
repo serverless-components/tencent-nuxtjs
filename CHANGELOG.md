@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/serverless-components/tencent-nuxtjs/compare/v1.0.0...v1.0.1) (2020-03-19)
+
+
+### Bug Fixes
+
+* remove unuse file ([93090b5](https://github.com/serverless-components/tencent-nuxtjs/commit/93090b5f830883b7dbca5d521a3dd9480677865e))
+* support customize runtime ([aac8784](https://github.com/serverless-components/tencent-nuxtjs/commit/aac8784824cc10663f95c8098f2b1d4ad59d491a))
+
 ## [1.0.0](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.2.2...v1.0.0) (2020-03-16)
 
 
