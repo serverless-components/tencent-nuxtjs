@@ -59,6 +59,7 @@ NuxtjsFunc:
   inputs:
     functionName: nuxtjs-function
     region: ap-guangzhou
+    runtime: Nodejs8.9
     code: ./
     functionConf:
       timeout: 30

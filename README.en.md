@@ -73,6 +73,7 @@ NuxtjsFunc:
   inputs:
     functionName: nuxtjs-function
     region: ap-guangzhou
+    runtime: Nodejs8.9
     code: ./
     functionConf:
       timeout: 30
@@ -88,6 +89,8 @@ NuxtjsFunc:
 ```
 
 - [More Options](https://github.com/serverless-components/tencent-nuxtjs/blob/master/docs/configure.md)
+
+> Notice: Now, `runtime` is default `Nodejs8.9`, for deployed project using `Nodejs8.9`, should set `runtime` to `Nodejs8.9` manually for updating.
 
 ### 4. Deploy
 
