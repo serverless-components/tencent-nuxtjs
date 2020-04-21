@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.5](https://github.com/serverless-components/tencent-nuxtjs/compare/v1.0.4...v1.0.5) (2020-04-21)
+
+
+### Features
+
+* make callbackWaitsForEmptyEventLoop default to false ([f1b4ddb](https://github.com/serverless-components/tencent-nuxtjs/commit/f1b4ddb5dff7aebd93247194d18981a940f0adf1))
+
 ### [1.0.4](https://github.com/serverless-components/tencent-nuxtjs/compare/v1.0.3...v1.0.4) (2020-04-03)
 
 
