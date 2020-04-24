@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.6](https://github.com/serverless-components/tencent-nuxtjs/compare/v1.0.5...v1.0.6) (2020-04-24)
+
+
+### Features
+
+* upgrade framework ([8f08c40](https://github.com/serverless-components/tencent-nuxtjs/commit/8f08c40c2ba38ec6553d50f9da58076e59a20e63))
+
 ### [1.0.5](https://github.com/serverless-components/tencent-nuxtjs/compare/v1.0.4...v1.0.5) (2020-04-21)
 
 
