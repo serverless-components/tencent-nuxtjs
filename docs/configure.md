@@ -18,6 +18,9 @@ inputs:
   runtime: Nodejs8.9
   serviceId: service-np1uloxw
   src: ./src
+  layers:
+    - name: nuxtLayer
+      version: 1
   functionConf:
     timeout: 10
     memorySize: 128
@@ -66,6 +69,7 @@ Main param description
 | serviceName                              |    N     |                 | API-Gateway service name, default to create a new serivce                                   |
 | serviceId                                |    N     |                 | API-Gateway service id, if it has will use this APII-Gateway service                        |
 | src                                      |    N     | `process.cwd()` | Default is current working directory, if it is object, refer to [code object](#code-object) |
+| layers                                   |    N     |                 | Bind layers for scf, array of [Layer](#layer)                                               |
 | exclude                                  |    N     |                 | exclude file                                                                                |
 | include                                  |    N     |                 | include file, if relative path, should relative to `serverless.yml`                         |
 | [functionConf](#funtionConf)             |    N     |                 | Function configure                                                                          |
@@ -73,12 +77,20 @@ Main param description
 | [cloudDNSConf](#cloudDNSConf)            |    N     |                 | Special config for region                                                                   |
 | [Region special config](#apigatewayConf) |    N     |                 | Special config for region. Use region name for key                                          |
 
-## code object
+## src object
 
 | Param  | Required |  Type  | Default | Description        |
 | ------ | :------: | :----: | :-----: | :----------------- |
+| src    |    N     | String |         | code path          |
 | bucket |    N     | String |         | bucket name        |
 | object |    N     | String |         | bucket object name |
+
+## layer
+
+| Param   | Required |  Type  | Default | Description   |
+| ------- | :------: | :----: | :-----: | :------------ |
+| name    |    N     | String |         | layer name    |
+| version |    N     | String |         | layer version |
 
 ### cloudDNSConf
 
