@@ -2,10 +2,7 @@
 
 # 腾讯云 Nuxt.js Serverless Component
 
-[![npm](https://img.shields.io/npm/v/%40serverless%2Ftencent-nuxtjs)](http://www.npmtrends.com/%40serverless%2Ftencent-nuxtjs)
-[![NPM downloads](http://img.shields.io/npm/dm/%40serverless%2Ftencent-nuxtjs.svg?style=flat-square)](http://www.npmtrends.com/%40serverless%2Ftencent-nuxtjs)
-
-简体中文 | [English](https://github.com/serverless-components/tencent-nuxtjs/blob/master/README.en.md)
+简体中文 | [English](https://github.com/serverless-components/tencent-nuxtjs/blob/v2/README.en.md)
 
 ## 简介
 
@@ -24,17 +21,9 @@
 #### 初始化 Nuxt.js 项目
 
 ```bash
-$ npx create-nuxt-app serverlesss-nuxtjs
-$ cd serverlesss-nuxtjs
+$ mkdir serverless-nuxtjs && cd serverless-nuxtjs
+$ npx create-nuxt-app src
 ```
-
-添加 `express` 依赖：
-
-```
-$ npm i express --save
-```
-
-> 注释：这里通过 express 服务来代理 nuxt.js 的服务。
 
 ### 1. 安装
 
@@ -54,88 +43,44 @@ $ touch serverless.yml
 
 ```yml
 # serverless.yml
-NuxtjsFunc:
-  component: '@serverless/tencent-nuxtjs'
-  inputs:
-    functionName: nuxtjs-function
-    region: ap-guangzhou
-    runtime: Nodejs8.9
-    code: ./
-    functionConf:
-      timeout: 30
-      memorySize: 128
-    environment:
-      variables:
-        RUN_ENV: test
-    apigatewayConf:
-      protocols:
-        - http
-        - https
-      environment: release
+component: nuxtjs
+name: nuxtjsDemo
+org: orgDemo
+app: appDemo
+stage: dev
+
+inputs:
+  src:
+    src: ./src
+    exclude:
+      - .env
+  region: ap-guangzhou
+  runtime: Nodejs10.15
+  apigatewayConf:
+    protocols:
+      - http
+      - https
+    environment: release
 ```
 
-- [更多配置](https://github.com/serverless-components/tencent-nuxtjs/tree/master/docs/configure.md)
+- [更多配置](https://github.com/serverless-components/tencent-nuxtjs/tree/v2/docs/configure.md)
 
 ### 3. 部署
 
 #### 3.1 构建静态资源
 
 ```bash
-$ npm run build
+# 进入 nuxt 项目目录 src
+$ cd src && npm run build
 ```
 
 #### 3.2 部署到云端
 
 如您的账号未 [登陆](https://cloud.tencent.com/login) 或 [注册](https://cloud.tencent.com/register) 腾讯云，您可以直接通过 `微信` 扫描命令行中的二维码进行授权登陆和注册。
 
-通过 `sls` 命令进行部署，并可以添加 `--debug` 参数查看部署过程中的信息
-
 ```bash
-$ sls --debug
-
-  DEBUG ─ Resolving the template's static variables.
-  DEBUG ─ Collecting components from the template.
-  DEBUG ─ Downloading any NPM components found in the template.
-  DEBUG ─ Analyzing the template's components dependencies.
-  DEBUG ─ Creating the template's components graph.
-  DEBUG ─ Syncing template state.
-  DEBUG ─ Executing the template's components graph.
-  DEBUG ─ Generating serverless handler...
-  DEBUG ─ Generated serverless handler successfully.
-  DEBUG ─ Compressing function nuxtjs-function file to /Users/yugasun/Desktop/Develop/serverless/tencent-nuxtjs/example/.serverless/nuxtjs-function.zip.
-  DEBUG ─ Compressed function nuxtjs-function file successful
-  DEBUG ─ Uploading service package to cos[sls-cloudfunction-ap-guangzhou-code]. sls-cloudfunction-default-nuxtjs-function-1584350378.zip
-  DEBUG ─ Uploaded package successful /Users/yugasun/Desktop/Develop/serverless/tencent-nuxtjs/example/.serverless/nuxtjs-function.zip
-  DEBUG ─ Creating function nuxtjs-function
-  nuxtjs-function [████████████████████████████████████████] 100% | ETA: 0s | Speed: 1502.16k/s
-  DEBUG ─ Created function nuxtjs-function successful
-  DEBUG ─ Setting tags for function nuxtjs-function
-  DEBUG ─ Creating trigger for function nuxtjs-function
-  DEBUG ─ Deployed function nuxtjs-function successful
-  DEBUG ─ Starting API-Gateway deployment with name ap-guangzhou-apigateway in the ap-guangzhou region
-  DEBUG ─ Service with ID service-dxcq0xuu created.
-  DEBUG ─ API with id api-b83j9sme created.
-  DEBUG ─ Deploying service with id service-dxcq0xuu.
-  DEBUG ─ Deployment successful for the api named ap-guangzhou-apigateway in the ap-guangzhou region.
-
-  NuxtjsFunc:
-    functionName:        nuxtjs-function
-    functionOutputs:
-      ap-guangzhou:
-        Name:        nuxtjs-function
-        Runtime:     Nodejs8.9
-        Handler:     serverless-handler.handler
-        MemorySize:  128
-        Timeout:     30
-        Region:      ap-guangzhou
-        Namespace:   default
-        Description: This is a template function
-    region:              ap-guangzhou
-    apiGatewayServiceId: service-dxcq0xuu
-    url:                 https://service-dxcq0xuu-1251556596.gz.apigw.tencentcs.com/release/
-    cns:                 (empty array)
-
-  38s › NuxtjsFunc › done
+# 进入项目根目录 serverless-nuxtjs
+$ sls deploy
 ```
 
 > 注意: `sls` 是 `serverless` 命令的简写。
@@ -145,14 +90,8 @@ $ sls --debug
 通过以下命令移除部署的 Nuxjs 服务，包括云函数和 API 网关。
 
 ```bash
-$ sls remove --debug
-
-  DEBUG ─ Flushing template state and removing all components.
-  DEBUG ─ Removed function nuxtjs-function successful
-  DEBUG ─ Removing any previously deployed API. api-b83j9sme
-  DEBUG ─ Removing any previously deployed service. service-dxcq0xuu
-
-  8s › NuxtjsFunc › done
+# 进入项目根目录 serverless-nuxtjs
+$ sls remove
 ```
 
 ### 账号配置（可选）
