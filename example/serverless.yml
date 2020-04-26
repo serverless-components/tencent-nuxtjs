@@ -1,18 +1,17 @@
-NuxtjsFunc:
-  component: '@serverless/tencent-nuxtjs'
-  inputs:
-    functionName: nuxtjs-function
-    region: ap-guangzhou
-    runtime: Nodejs8.9
-    code: ./
-    functionConf:
-      timeout: 30
-      memorySize: 128
-    environment:
-      variables:
-        RUN_ENV: test
-    apigatewayConf:
-      protocols:
-        - http
-        - https
-      environment: release
+component: nuxtjs
+name: nuxtjsDemo
+org: orgDemo
+app: appDemo
+stage: dev
+
+inputs:
+  src: ./src
+  region: ap-guangzhou
+  runtime: Nodejs10.15
+  exclude:
+    - .env
+  apigatewayConf:
+    protocols:
+      - http
+      - https
+    environment: release
