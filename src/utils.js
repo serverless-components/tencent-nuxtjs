@@ -1,5 +1,5 @@
 const path = require('path')
-const { copySync } = require('fs-extra')
+const { copySync, readFileSync, writeFileSync } = require('fs-extra')
 const Cam = require('tencent-cloud-sdk').cam
 const { Domain } = require('tencent-component-toolkit')
 const ensureObject = require('type/object/ensure')
@@ -22,6 +22,12 @@ const generateId = () =>
   Math.random()
     .toString(36)
     .substring(6)
+
+const transformNextConfig = (configPath) => {
+  const content = readFileSync(configPath, 'utf8').replace('export default', 'module.exports =')
+  writeFileSync(configPath, content)
+}
+
 /*
  * Packages framework app and injects shims and sdk
  *
@@ -58,6 +64,13 @@ const packageCode = async (instance, inputs) => {
   console.log(`Installing Serverless Framework SDK...`)
   instance.state.handler = await instance.addSDK(sourceDirectory, '_shims/handler.handler')
   // zip the source directory with the shim and the sdk
+
+  // replace `export default` to `module.exports =`
+  try {
+    transformNextConfig(path.join(sourceDirectory, 'nuxt.config.js'))
+  } catch (e) {
+    // no op
+  }
 
   console.log(`Zipping files...`)
   const zipPath = await instance.zip(sourceDirectory)
@@ -184,7 +197,10 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
         default: CONFIGS.description
       }
     ),
-    fromClientRemark
+    fromClientRemark,
+    layers: ensureIterable(tempFunctionConf.layers ? tempFunctionConf.layers : inputs.layers, {
+      default: []
+    })
   }
   functionConf.tags = ensureObject(tempFunctionConf.tags ? tempFunctionConf.tags : inputs.tag, {
     default: null
