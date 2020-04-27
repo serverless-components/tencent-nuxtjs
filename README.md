@@ -100,6 +100,7 @@ $ cd src && npm run build
 ```bash
 # 进入项目根目录 serverless-nuxtjs
 $ sls deploy
+
 serverless ⚡ framework
 Action: "deploy" - Stage: "dev" - App: "appDemo" - Instance: "nuxtjsDemo"
 
