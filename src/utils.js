@@ -1,6 +1,5 @@
 const path = require('path')
 const { copySync, readFileSync, writeFileSync } = require('fs-extra')
-const Cam = require('tencent-cloud-sdk').cam
 const { Domain } = require('tencent-component-toolkit')
 const ensureObject = require('type/object/ensure')
 const ensureIterable = require('type/iterable/ensure')
@@ -122,14 +121,6 @@ const getDefaultProtocol = (protocols) => {
   return 'http'
 }
 
-const getUserInfo = async (credentials) => {
-  const cam = new Cam(credentials)
-  return await cam.request({
-    Action: 'GetUserAppId',
-    Version: '2019-01-16'
-  })
-}
-
 const deleteRecord = (newRecords, historyRcords) => {
   const deleteList = []
   for (let i = 0; i < historyRcords.length; i++) {
@@ -170,12 +161,11 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
   const stateServiceId = instance.state[regionList[0]] && instance.state[regionList[0]].serviceId
 
   const functionConf = {
-    code:
-      typeof inputs.src === 'object'
-        ? inputs.src
-        : {
-            src: inputs.src
-          },
+    code: {
+      src: inputs.src,
+      bucket: inputs.srcOriginal && inputs.srcOriginal.bucket,
+      object: inputs.srcOriginal && inputs.srcOriginal.object
+    },
     name:
       ensureString(inputs.functionName, { isOptional: true }) ||
       stateFunctionName ||
@@ -325,7 +315,6 @@ module.exports = {
   mergeJson,
   capitalString,
   getDefaultProtocol,
-  getUserInfo,
   deleteRecord,
   prepareInputs
 }
