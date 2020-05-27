@@ -106,3 +106,36 @@ $ sls remove
 ### More Components
 
 Checkout the [Serverless Components](https://github.com/serverless/components) repo for more information.
+
+## Migration for custom express server
+
+If you had used `express` for you server, you should create entry file `sls.js`, please change depand on your server entry file, below is a template:
+
+```js
+const path = require('path')
+const express = require('express')
+const { Nuxt } = require('nuxt')
+const app = express()
+
+async function createServer(custom) {
+  // get next config
+  const configPath = path.join(__dirname, 'nuxt.config.js')
+  const config = require(configPath)
+  config.dev = false
+
+  // Init Nuxt.js
+  const nuxt = new Nuxt(config)
+  await nuxt.ready()
+
+  // Give nuxt middleware to express
+  app.use(nuxt.render)
+
+  // define binary type for response
+  // if includes, will return base64 encoded, very useful for images
+  app.binaryTypes = ['*/*']
+
+  return app
+}
+
+module.exports = createServer
+```

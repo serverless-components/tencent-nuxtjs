@@ -1,10 +1,10 @@
 name: nuxtjs
 version: 0.0.3
-author: Tencent Cloud Inc.
-org: Tencent Cloud Inc.
+author: Tencent Cloud, Inc.
+org: Tencent Cloud, Inc.
 description: Deploys a serverless Nuxt.js application onto Tencent SCF and Tencent APIGateway.
 keywords: tencent, serverless, nuxt.js
-repo: https://github.com/serverless-components/tencent-nuxtjs
-readme: https://github.com/serverless-components/tencent-nuxtjs
+repo: https://github.com/serverless-components/tencent-nuxtjs/tree/v2
+readme: https://github.com/serverless-components/tencent-nuxtjs/tree/v2/README.md
 license: MIT
 main: ./src

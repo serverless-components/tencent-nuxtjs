@@ -6,7 +6,7 @@
 
 ## 简介
 
-**腾讯云[Nuxt.js](https://github.com/nuxt/nuxt.js)组件** - 通过使用[**Tencent Serverless Framework**](https://github.com/serverless/components/tree/cloud) , 基于云上 Serverless 服务（如API网关、云函数等），实现“0”配置，便捷开发，极速部署采用Nuxt.js框架的网页应用，Nuxt.js组件支持丰富的配置扩展，提供了目前便捷实用，开发成本低的网页应用项目的开发/托管能力。
+**腾讯云[Nuxt.js](https://github.com/nuxt/nuxt.js)组件** - 通过使用[**Tencent Serverless Framework**](https://github.com/serverless/components/tree/cloud) , 基于云上 Serverless 服务（如 API 网关、云函数等），实现“0”配置，便捷开发，极速部署采用 Nuxt.js 框架的网页应用，Nuxt.js 组件支持丰富的配置扩展，提供了目前便捷实用，开发成本低的网页应用项目的开发/托管能力。
 
 特性介绍：
 
@@ -21,11 +21,11 @@
 
 0. [**准备**](#0-准备)
 1. [**安装**](#1-安装)
-2. [**配置**](#2-配置)
-3. [**部署**](#3-部署)
-4. [**开发调试**](#4-开发调试)
-5. [**查看状态**](#5-查看部署状态)
-6. [**移除**](#6-移除)
+1. [**配置**](#2-配置)
+1. [**部署**](#3-部署)
+1. [**开发调试**](#4-开发调试)
+1. [**查看状态**](#5-查看部署状态)
+1. [**移除**](#6-移除)
 
 更多资源：
 
@@ -33,17 +33,18 @@
 - [**更多组件**](#更多组件)
 - [**FAQ**](#FAQ)
 
-
 ### 0. 准备
 
 #### 初始化 Nuxt.js 项目
 
-首先，在本地创建根目录，并初始化一个Nuxt.js项目
+首先，在本地创建根目录，并初始化一个 Nuxt.js 项目
+
 ```bash
 $ mkdir serverless-nuxtjs && cd serverless-nuxtjs
 $ npx create-nuxt-app src
 ```
-> 注意：本教程中的Nuxt项目使用JavaScript与Npm安装包进行构建，初始化项目的时候请选择相应的选项
+
+> 注意：本教程中的 Nuxt 项目使用 JavaScript 与 Npm 安装包进行构建，初始化项目的时候请选择相应的选项
 
 ### 1. 安装
 
@@ -89,7 +90,8 @@ inputs:
 
 #### 3.1 构建静态资源
 
-进入到nuxt项目目录下，构建静态资源
+进入到 nuxt 项目目录下，构建静态资源
+
 ```bash
 $ cd src && npm run build
 ```
@@ -97,6 +99,7 @@ $ cd src && npm run build
 #### 3.2 部署到云端
 
 回到在 serverless.yml 文件所在的项目根目录，运行以下指令进行部署：
+
 ```bash
 # 进入项目根目录 serverless-nuxtjs
 $ sls deploy
@@ -121,7 +124,7 @@ scf:
 部署时需要进行身份验证，如您的账号未 [登陆](https://cloud.tencent.com/login) 或 [注册](https://cloud.tencent.com/register) 腾讯云，您可以直接通过 `微信` 扫描命令行中的二维码进行授权登陆和注册。
 
 > 注意: 如果希望查看更多部署过程的信息，可以通过`sls deploy --debug` 命令查看部署过程中的实时日志信息，`sls`是 `serverless` 命令的缩写。
-`sls` 是 `serverless` 命令的简写。
+> `sls` 是 `serverless` 命令的简写。
 
 ### 4. 开发调试
 
@@ -146,8 +149,8 @@ $ serverless info
 ```bash
 $ sls remove
 ```
-和部署类似，支持通过 `sls remove --debug` 命令查看移除过程中的实时日志信息，`sls`是 `serverless` 命令的缩写。
 
+和部署类似，支持通过 `sls remove --debug` 命令查看移除过程中的实时日志信息，`sls`是 `serverless` 命令的缩写。
 
 ### 账号配置
 
@@ -168,11 +171,48 @@ $ touch .env # 腾讯云的配置信息
 TENCENT_SECRET_ID=123
 TENCENT_SECRET_KEY=123
 ```
-> 注意：海外ip登录时，需要在`.env`文件中添加`SERVERLESS_PLATFORM_VENDOR=tencent` ，使sls默认使用tencent组件
+
+> 注意：海外 ip 登录时，需要在`.env`文件中添加`SERVERLESS_PLATFORM_VENDOR=tencent` ，使 sls 默认使用 tencent 组件
 
 ### 更多组件
 
 可以在 [Serverless Components](https://github.com/serverless/components) repo 中查询更多组件的信息。
+
+## 项目迁移 - 自定义 express 服务
+
+如果你的 Nuxt.js 项目本身运行就是基于 `express` 自定义服务的，那么你需要在项目中自定义入口文件 `sls.js`，需要参考你的服务启动文件进行修改，以下是一个模板文件：
+
+```js
+const path = require('path')
+const express = require('express')
+const { Nuxt } = require('nuxt')
+const app = express()
+
+async function createServer(custom) {
+  // get next config
+  let configPath = path.join(__dirname, '..', 'nuxt.config.js')
+  if (custom) {
+    configPath = path.join(__dirname, 'nuxt.config.js')
+  }
+  const config = require(configPath)
+  config.dev = false
+
+  // Init Nuxt.js
+  const nuxt = new Nuxt(config)
+  await nuxt.ready()
+
+  // Give nuxt middleware to express
+  app.use(nuxt.render)
+
+  // define binary type for response
+  // if includes, will return base64 encoded, very useful for images
+  app.binaryTypes = ['*/*']
+
+  return app
+}
+
+module.exports = createServer
+```
 
 ### FAQ
 
