@@ -1,9 +1,12 @@
 const path = require('path')
 const express = require('express')
 const { Nuxt } = require('nuxt')
-const app = express()
+
+// not report route for custom monitor
+const noReportRoutes = ['/_next', '/static']
 
 async function createServer(custom) {
+  const server = express()
   // get next config
   let configPath = path.join(__dirname, '..', 'nuxt.config.js')
   if (custom) {
@@ -17,13 +20,21 @@ async function createServer(custom) {
   await nuxt.ready()
 
   // Give nuxt middleware to express
-  app.use(nuxt.render)
+  // app.use(nuxt.render)
+  server.all('*', (req, res, next) => {
+    noReportRoutes.forEach((route) => {
+      if (req.path.indexOf(route) === 0) {
+        req.__SLS_NO_REPORT__ = true
+      }
+    })
+    return nuxt.render(req, res, next)
+  })
 
   // define binary type for response
   // if includes, will return base64 encoded, very useful for images
-  app.binaryTypes = ['*/*']
+  server.binaryTypes = ['*/*']
 
-  return app
+  return server
 }
 
 module.exports = createServer

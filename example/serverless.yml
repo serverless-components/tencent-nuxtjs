@@ -1,4 +1,4 @@
-component: nuxtjs
+component: nuxtjs@dev
 name: nuxtjsDemo
 org: orgDemo
 app: appDemo
@@ -6,7 +6,7 @@ stage: dev
 
 inputs:
   src:
-    src: ./src
+    src: ./
     exclude:
       - .env
   region: ap-guangzhou

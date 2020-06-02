@@ -1,6 +1,6 @@
 const { Component } = require('@serverless/core')
-const { MultiApigw, Scf, Apigw, Cos, Cns } = require('tencent-component-toolkit')
-const { packageCode, getDefaultProtocol, deleteRecord, prepareInputs } = require('./utils')
+const { MultiApigw, Scf, Apigw, Cos, Cns, Cam } = require('tencent-component-toolkit')
+const { uploadCodeToCos, getDefaultProtocol, deleteRecord, prepareInputs } = require('./utils')
 const CONFIGS = require('./config')
 
 class ServerlessComopnent extends Component {
@@ -18,6 +18,10 @@ class ServerlessComopnent extends Component {
       SecretKey: tmpSecrets.TmpSecretKey,
       Token: tmpSecrets.Token
     }
+  }
+
+  getAppId() {
+    return this.credentials.tencent.tmpSecrets.appId
   }
 
   async uploadCodeToCos(credentials, inputs, region, filePath) {
@@ -62,20 +66,27 @@ class ServerlessComopnent extends Component {
   }
 
   async deployFunction(credentials, inputs, regionList) {
-    // if set bucket and object not pack code
-    let packageDir
-    if (!inputs.code.bucket || !inputs.code.object) {
-      packageDir = await packageCode(this, inputs)
+    if (!inputs.role) {
+      try {
+        const camClient = new Cam(credentials)
+        const roleExist = await camClient.CheckSCFExcuteRole()
+        if (roleExist) {
+          inputs.role = 'QCS_SCFExcuteRole'
+        }
+      } catch (e) {
+        // no op
+      }
     }
 
     // 上传代码到COS
     const uploadCodeHandler = []
     const outputs = {}
+    const appId = this.getAppId()
 
     for (let eveRegionIndex = 0; eveRegionIndex < regionList.length; eveRegionIndex++) {
       const curRegion = regionList[eveRegionIndex]
       const funcDeployer = async () => {
-        const code = await this.uploadCodeToCos(credentials, inputs, curRegion, packageDir)
+        const code = await uploadCodeToCos(this, appId, credentials, inputs, curRegion)
         const scf = new Scf(credentials, curRegion)
         const tempInputs = {
           ...inputs,

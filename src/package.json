@@ -5,9 +5,9 @@
   "author": "Tencent Cloud, Inc.",
   "license": "MIT",
   "dependencies": {
+    "adm-zip": "^0.4.14",
     "download": "^8.0.0",
-    "fs-extra": "^8.1.0",
-    "tencent-component-toolkit": "^1.5.5",
+    "tencent-component-toolkit": "^1.8.3",
     "type": "^2.0.0"
   }
 }

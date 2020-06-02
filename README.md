@@ -40,8 +40,8 @@
 首先，在本地创建根目录，并初始化一个 Nuxt.js 项目
 
 ```bash
-$ mkdir serverless-nuxtjs && cd serverless-nuxtjs
-$ npx create-nuxt-app src
+$ npx create-nuxt-app serverless-nuxtjs
+$ cd serverless-nuxtjs
 ```
 
 > 注意：本教程中的 Nuxt 项目使用 JavaScript 与 Npm 安装包进行构建，初始化项目的时候请选择相应的选项
@@ -72,7 +72,7 @@ stage: dev # (可选) 用于区分环境信息，默认值是 dev
 
 inputs:
   src:
-    src: ./src
+    src: ./
     exclude:
       - .env
   region: ap-guangzhou
@@ -174,7 +174,7 @@ TENCENT_SECRET_KEY=123
 
 > 注意：海外 ip 登录时，需要在`.env`文件中添加`SERVERLESS_PLATFORM_VENDOR=tencent` ，使 sls 默认使用 tencent 组件
 
-### 更多组件
+## 更多组件
 
 可以在 [Serverless Components](https://github.com/serverless/components) repo 中查询更多组件的信息。
 
@@ -186,9 +186,12 @@ TENCENT_SECRET_KEY=123
 const path = require('path')
 const express = require('express')
 const { Nuxt } = require('nuxt')
-const app = express()
+
+// not report route for custom monitor
+const noReportRoutes = ['/_next', '/static']
 
 async function createServer(custom) {
+  const server = express()
   // get next config
   let configPath = path.join(__dirname, '..', 'nuxt.config.js')
   if (custom) {
@@ -202,18 +205,41 @@ async function createServer(custom) {
   await nuxt.ready()
 
   // Give nuxt middleware to express
-  app.use(nuxt.render)
+  // app.use(nuxt.render)
+  server.all('*', (req, res, next) => {
+    noReportRoutes.forEach((route) => {
+      if (req.path.indexOf(route) === 0) {
+        req.__SLS_NO_REPORT__ = true
+      }
+    })
+    return nuxt.render(req, res, next)
+  })
 
   // define binary type for response
   // if includes, will return base64 encoded, very useful for images
-  app.binaryTypes = ['*/*']
+  server.binaryTypes = ['*/*']
 
-  return app
+  return server
 }
 
 module.exports = createServer
 ```
 
-### FAQ
+## 自定义监控
 
-1. [为什么不需要入口文件了？](https://github.com/serverless-components/tencent-nuxtjs/issues/1)
+当在部署 Next.js 应用时，如果 `serverless.yml` 中未指定 `role`，默认会尝试绑定 `QCS_SCFExcuteRole`，并且开启自定义监控，帮助用户收集应用监控指标。对于为自定义入口文件的项目，会默认上报除含有 `/_next` 和 `/static` 的路由。如果你想自定义上报自己的路由性能，那么可以自定义 `sls.js` 入口文件，对于无需上报的路由，在 express 服务的 `req` 对象上添加 `__SLS_NO_REPORT__` 属性值为 `true` 即可。比如：
+
+```js
+server.get('/no-report', (req, res) => {
+  req.__SLS_NO_REPORT__ = true
+  return handle(req, res)
+})
+```
+
+那么用户在访问 `GET /no-report` 路由时，就不会上报自定义监控指标。
+
+## License
+
+MIT License
+
+Copyright (c) 2020 Tencent Cloud, Inc.

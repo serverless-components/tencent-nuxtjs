@@ -22,8 +22,8 @@
 #### Init Nuxt.js Project
 
 ```bash
-$ mkdir serverless-nuxtjs && cd serverless-nuxtjs
-$ npx create-nuxt-app src
+$ npx create-nuxt-app serverless-nuxtjs
+$ cd serverless-nuxtjs
 ```
 
 ### 1. Install
@@ -103,7 +103,7 @@ $ sls deploy
 $ sls remove
 ```
 
-### More Components
+## More Components
 
 Checkout the [Serverless Components](https://github.com/serverless/components) repo for more information.
 
@@ -115,11 +115,17 @@ If you had used `express` for you server, you should create entry file `sls.js`,
 const path = require('path')
 const express = require('express')
 const { Nuxt } = require('nuxt')
-const app = express()
+
+// not report route for custom monitor
+const noReportRoutes = ['/_next', '/static']
 
 async function createServer(custom) {
+  const server = express()
   // get next config
-  const configPath = path.join(__dirname, 'nuxt.config.js')
+  let configPath = path.join(__dirname, '..', 'nuxt.config.js')
+  if (custom) {
+    configPath = path.join(__dirname, 'nuxt.config.js')
+  }
   const config = require(configPath)
   config.dev = false
 
@@ -128,14 +134,42 @@ async function createServer(custom) {
   await nuxt.ready()
 
   // Give nuxt middleware to express
-  app.use(nuxt.render)
+  // app.use(nuxt.render)
+  server.all('*', (req, res, next) => {
+    noReportRoutes.forEach((route) => {
+      if (req.path.indexOf(route) === 0) {
+        req.__SLS_NO_REPORT__ = true
+      }
+    })
+    return nuxt.render(req, res, next)
+  })
 
   // define binary type for response
   // if includes, will return base64 encoded, very useful for images
-  app.binaryTypes = ['*/*']
+  server.binaryTypes = ['*/*']
 
-  return app
+  return server
 }
 
 module.exports = createServer
 ```
+
+## Customize Monitor
+
+When deploying Next.js Application, if net config `role` in `serverless.yml`, it will try to bind `QCS_SCFExcuteRole` role for it, and start customize monitor which will help user to collect monitor data.
+For project which have no customize entry file `sls.js`, it will ignore request paths which start with `/_next` and `/static`. If you want to customize `sls.js` file, you can create it by yourself. For no report path, just set `__SLS_NO_REPORT__` to `true` on `req` object, like below:
+
+```js
+server.get('/no-report', (req, res) => {
+  req.__SLS_NO_REPORT__ = true
+  return handle(req, res)
+})
+```
+
+so when user access `GET /no-report` route, it won't report monitor data.
+
+## License
+
+MIT License
+
+Copyright (c) 2020 Tencent Cloud, Inc.
