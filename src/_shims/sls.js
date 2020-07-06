@@ -2,9 +2,6 @@ const path = require('path')
 const express = require('express')
 const { Nuxt } = require('nuxt')
 
-// not report route for custom monitor
-const noReportRoutes = ['/_next', '/static']
-
 async function createServer(custom) {
   const server = express()
   // get next config
@@ -22,11 +19,6 @@ async function createServer(custom) {
   // Give nuxt middleware to express
   // app.use(nuxt.render)
   server.all('*', (req, res, next) => {
-    noReportRoutes.forEach((route) => {
-      if (req.path.indexOf(route) === 0) {
-        req.__SLS_NO_REPORT__ = true
-      }
-    })
     return nuxt.render(req, res, next)
   })
 

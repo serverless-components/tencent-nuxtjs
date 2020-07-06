@@ -1,12 +1,6 @@
 {
-  "name": "@serverless/nuxtjs",
-  "main": "./handler.js",
-  "scripts": {},
-  "author": "Tencent Cloud, Inc.",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
-    "tencent-component-monitor": "^1.1.0",
     "tencent-serverless-http": "^1.2.0"
   }
 }

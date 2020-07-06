@@ -8,19 +8,32 @@ const AdmZip = require('adm-zip')
 const CONFIGS = require('./config')
 
 /*
- * Pauses execution for the provided miliseconds
- *
- * @param ${number} wait - number of miliseconds to wait
- */
-const sleep = async (wait) => new Promise((resolve) => setTimeout(() => resolve(), wait))
-
-/*
  * Generates a random id
  */
 const generateId = () =>
   Math.random()
     .toString(36)
     .substring(6)
+
+const getType = (obj) => {
+  return Object.prototype.toString.call(obj).slice(8, -1)
+}
+
+const validateTraffic = (num) => {
+  if (getType(num) !== 'Number') {
+    throw new TypeError(
+      `PARAMETER_${CONFIGS.compName.toUpperCase()}_TRAFFIC`,
+      'traffic must be a number'
+    )
+  }
+  if (num < 0 || num > 1) {
+    throw new TypeError(
+      `PARAMETER_${CONFIGS.compName.toUpperCase()}_TRAFFIC`,
+      'traffic must be a number between 0 and 1'
+    )
+  }
+  return true
+}
 
 const transformNextConfig = (zipPath) => {
   const zip = new AdmZip(zipPath)
@@ -38,7 +51,7 @@ const transformNextConfig = (zipPath) => {
 }
 
 const getCodeZipPath = async (instance, inputs) => {
-  console.log(`Packaging ${CONFIGS.frameworkFullname} application...`)
+  console.log(`Packaging ${CONFIGS.compFullname} application...`)
 
   // unzip source zip file
   let zipPath
@@ -47,10 +60,14 @@ const getCodeZipPath = async (instance, inputs) => {
     const downloadPath = `/tmp/${generateId()}`
     const filename = 'template'
 
-    console.log(`Installing Default ${CONFIGS.frameworkFullname} App...`)
-    await download(CONFIGS.templateUrl, downloadPath, {
-      filename: `${filename}.zip`
-    })
+    console.log(`Installing Default ${CONFIGS.compFullname} App...`)
+    try {
+      await download(CONFIGS.templateUrl, downloadPath, {
+        filename: `${filename}.zip`
+      })
+    } catch (e) {
+      throw new TypeError(`DOWNLOAD_TEMPLATE`, 'Download default template failed.')
+    }
     zipPath = `${downloadPath}/${filename}.zip`
   } else {
     zipPath = inputs.code.src
@@ -195,7 +212,7 @@ const deleteRecord = (newRecords, historyRcords) => {
 const prepareInputs = async (instance, credentials, inputs = {}) => {
   // 对function inputs进行标准化
   const tempFunctionConf = inputs.functionConf ? inputs.functionConf : {}
-  const fromClientRemark = `tencent-${CONFIGS.framework}`
+  const fromClientRemark = `tencent-${CONFIGS.compName}`
   const regionList = inputs.region
     ? typeof inputs.region == 'string'
       ? [inputs.region]
@@ -217,8 +234,11 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
     name:
       ensureString(inputs.functionName, { isOptional: true }) ||
       stateFunctionName ||
-      `${CONFIGS.framework}_component_${generateId()}`,
+      `${CONFIGS.compName}_component_${generateId()}`,
     region: regionList,
+    role: ensureString(tempFunctionConf.role ? tempFunctionConf.role : inputs.role, {
+      default: ''
+    }),
     handler: ensureString(tempFunctionConf.handler ? tempFunctionConf.handler : inputs.handler, {
       default: CONFIGS.handler
     }),
@@ -238,8 +258,18 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
     fromClientRemark,
     layers: ensureIterable(tempFunctionConf.layers ? tempFunctionConf.layers : inputs.layers, {
       default: []
-    })
+    }),
+    publish: inputs.publish,
+    traffic: inputs.traffic,
+    lastVersion: instance.state.lastVersion
   }
+
+  // validate traffic
+  if (inputs.traffic !== undefined) {
+    validateTraffic(inputs.traffic)
+  }
+  functionConf.needSetTraffic = inputs.traffic !== undefined && functionConf.lastVersion
+
   functionConf.tags = ensureObject(tempFunctionConf.tags ? tempFunctionConf.tags : inputs.tag, {
     default: null
   })
@@ -270,10 +300,11 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
 
   // 对apigw inputs进行标准化
   const apigatewayConf = inputs.apigatewayConf ? inputs.apigatewayConf : {}
+  apigatewayConf.isDisabled = inputs.apigatewayConf === true
   apigatewayConf.fromClientRemark = fromClientRemark
   apigatewayConf.serviceName = inputs.serviceName
   apigatewayConf.description = `Serverless Framework Tencent-${capitalString(
-    CONFIGS.framework
+    CONFIGS.compName
   )} Component`
   apigatewayConf.serviceId = inputs.serviceId || stateServiceId
   apigatewayConf.region = functionConf.region
@@ -283,14 +314,30 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
     {
       path: '/',
       enableCORS: apigatewayConf.enableCORS,
+      serviceTimeout: apigatewayConf.serviceTimeout,
       method: 'ANY',
       function: {
-        isIntegratedResponse: true,
+        isIntegratedResponse: apigatewayConf.isIntegratedResponse === false ? false : true,
         functionName: functionConf.name,
-        functionNamespace: functionConf.namespace
+        functionNamespace: functionConf.namespace,
+        functionQualifier: functionConf.needSetTraffic ? '$DEFAULT' : '$LATEST'
       }
     }
   ]
+  if (apigatewayConf.usagePlan) {
+    apigatewayConf.endpoints[0].usagePlan = {
+      usagePlanId: apigatewayConf.usagePlan.usagePlanId,
+      usagePlanName: apigatewayConf.usagePlan.usagePlanName,
+      usagePlanDesc: apigatewayConf.usagePlan.usagePlanDesc,
+      maxRequestNum: apigatewayConf.usagePlan.maxRequestNum
+    }
+  }
+  if (apigatewayConf.auth) {
+    apigatewayConf.endpoints[0].auth = {
+      secretName: apigatewayConf.auth.secretName,
+      secretIds: apigatewayConf.auth.secretIds
+    }
+  }
 
   // 对cns inputs进行标准化
   const tempCnsConf = {}
@@ -358,7 +405,6 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
 
 module.exports = {
   generateId,
-  sleep,
   uploadCodeToCos,
   mergeJson,
   capitalString,

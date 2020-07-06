@@ -1,4 +1,3 @@
-require('tencent-component-monitor')
 const fs = require('fs')
 const path = require('path')
 const { createServer, proxy } = require('tencent-serverless-http')
@@ -24,8 +23,7 @@ module.exports.handler = async (event, context) => {
     server = createServer(app, null, app.binaryTypes || [])
   }
 
-  context.callbackWaitsForEmptyEventLoop =
-    app.callbackWaitsForEmptyEventLoop === true ? true : false
+  context.callbackWaitsForEmptyEventLoop = app.callbackWaitsForEmptyEventLoop === true
 
   if (app.slsInitialize && typeof app.slsInitialize === 'function') {
     await app.slsInitialize()

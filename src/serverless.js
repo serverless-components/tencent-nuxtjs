@@ -1,5 +1,6 @@
 const { Component } = require('@serverless/core')
 const { MultiApigw, Scf, Apigw, Cos, Cns, Cam } = require('tencent-component-toolkit')
+const { TypeError } = require('tencent-component-toolkit/src/utils/error')
 const { uploadCodeToCos, getDefaultProtocol, deleteRecord, prepareInputs } = require('./utils')
 const CONFIGS = require('./config')
 
@@ -8,8 +9,9 @@ class ServerlessComopnent extends Component {
     const { tmpSecrets } = this.credentials.tencent
 
     if (!tmpSecrets || !tmpSecrets.TmpSecretId) {
-      throw new Error(
-        'Cannot get secretId/Key, your account could be sub-account or does not have access, please check if SLS_QcsRole role exists in your account, and visit https://console.cloud.tencent.com/cam to bind this role to your account.'
+      throw new TypeError(
+        'CREDENTIAL',
+        'Cannot get secretId/Key, your account could be sub-account and does not have the access to use SLS_QcsRole, please make sure the role exists first, then visit https://cloud.tencent.com/document/product/1154/43006, follow the instructions to bind the role to your account.'
       )
     }
 
@@ -103,6 +105,26 @@ class ServerlessComopnent extends Component {
           ...(this.state[curRegion] ? this.state[curRegion] : {}),
           ...outputs[curRegion]
         }
+
+        // default version is $LATEST
+        outputs[curRegion].lastVersion = scfOutput.LastVersion
+          ? scfOutput.LastVersion
+          : this.state.lastVersion || '$LATEST'
+
+        // default traffic is 1.0, it can also be 0, so we should compare to undefined
+        outputs[curRegion].traffic = scfOutput.Traffic
+          ? scfOutput.Traffic
+          : this.state.traffic !== undefined
+          ? this.state.traffic
+          : 1
+
+        if (outputs[curRegion].traffic !== 1 && scfOutput.ConfigTrafficVersion) {
+          outputs[curRegion].configTrafficVersion = scfOutput.ConfigTrafficVersion
+          this.state.configTrafficVersion = scfOutput.ConfigTrafficVersion
+        }
+
+        this.state.lastVersion = outputs[curRegion].lastVersion
+        this.state.traffic = outputs[curRegion].traffic
       }
       uploadCodeHandler.push(funcDeployer())
     }
