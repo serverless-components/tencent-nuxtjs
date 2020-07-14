@@ -1,5 +1,6 @@
 const path = require('path')
 const { Domain, Cos } = require('tencent-component-toolkit')
+const { TypeError } = require('tencent-component-toolkit/src/utils/error')
 const ensureObject = require('type/object/ensure')
 const ensureIterable = require('type/iterable/ensure')
 const ensureString = require('type/string/ensure')
@@ -35,21 +36,6 @@ const validateTraffic = (num) => {
   return true
 }
 
-const transformNextConfig = (zipPath) => {
-  const zip = new AdmZip(zipPath)
-  const entries = zip.getEntries()
-  const [entry] = entries.filter((e) => e.name === 'nuxt.config.js')
-  entry.setData(
-    Buffer.from(
-      entry
-        .getData()
-        .toString('utf-8')
-        .replace('export default', 'module.exports =')
-    )
-  )
-  zip.writeZip()
-}
-
 const getCodeZipPath = async (instance, inputs) => {
   console.log(`Packaging ${CONFIGS.compFullname} application...`)
 
@@ -74,6 +60,119 @@ const getCodeZipPath = async (instance, inputs) => {
   }
 
   return zipPath
+}
+
+const prepareStaticCosInputs = async (instance, inputs, appId, codeZipPath) => {
+  const staticCosInputs = []
+  const { cosConf } = inputs
+  const sources = cosConf.sources || CONFIGS.defaultStatics
+  const { bucket } = cosConf
+  const staticPath = `/tmp/${generateId()}`
+  const codeZip = new AdmZip(codeZipPath)
+  const entries = codeZip.getEntries()
+
+  // traverse sources, generate static directory and deploy to cos
+  for (let i = 0; i < sources.length; i++) {
+    const curSource = sources[i]
+    const entryName = `${curSource.src}`
+    let exist = false
+    entries.forEach((et) => {
+      if (et.entryName.indexOf(entryName) === 0) {
+        codeZip.extractEntryTo(et, staticPath, true, true)
+        exist = true
+      }
+    })
+    if (exist) {
+      const cosInputs = {
+        force: true,
+        protocol: cosConf.protocol,
+        bucket: `${bucket}-${appId}`,
+        src: `${staticPath}/${entryName}`,
+        keyPrefix: curSource.targetDir || '/',
+        acl: {
+          permissions: 'public-read',
+          grantRead: '',
+          grantWrite: '',
+          grantFullControl: ''
+        }
+      }
+
+      if (cosConf.acl) {
+        cosInputs.acl = {
+          permissions: cosConf.acl.permissions || 'public-read',
+          grantRead: cosConf.acl.grantRead || '',
+          grantWrite: cosConf.acl.grantWrite || '',
+          grantFullControl: cosConf.acl.grantFullControl || ''
+        }
+      }
+
+      staticCosInputs.push(cosInputs)
+    }
+  }
+  return staticCosInputs
+}
+
+const prepareStaticCdnInputs = async (instance, inputs, origin) => {
+  const { cdnConf } = inputs
+  const cdnInputs = {
+    async: true,
+    area: cdnConf.area || 'mainland',
+    domain: cdnConf.domain,
+    serviceType: 'web',
+    origin: {
+      origins: [origin],
+      originType: 'cos',
+      originPullProtocol: 'https'
+    },
+    autoRefresh: true,
+    ...cdnConf
+  }
+  if (cdnConf.https) {
+    // using these default configs, for making user's config more simple
+    cdnInputs.forceRedirect = cdnConf.https.forceRedirect || CONFIGS.defaultCdnConf.forceRedirect
+    if (!cdnConf.https.certId) {
+      throw new TypeError(
+        `PARAMETER_${CONFIGS.compName.toUpperCase()}_HTTPS`,
+        'https.certId is required'
+      )
+    }
+    cdnInputs.https = {
+      ...CONFIGS.defaultCdnConf.https,
+      ...{
+        http2: cdnConf.https.http2 || 'on',
+        certInfo: {
+          certId: cdnConf.https.certId
+        }
+      }
+    }
+  }
+  if (cdnInputs.autoRefresh) {
+    cdnInputs.refreshCdn = {
+      flushType: cdnConf.refreshType || 'delete',
+      urls: [`http://${cdnInputs.domain}`, `https://${cdnInputs.domain}`]
+    }
+  }
+
+  return cdnInputs
+}
+
+const transformNextConfig = (zipPath) => {
+  const zip = new AdmZip(zipPath)
+  const entries = zip.getEntries()
+  const [entry] = entries.filter((e) => e.name === 'nuxt.config.js')
+  if (entry) {
+    entry.setData(
+      Buffer.from(
+        entry
+          .getData()
+          .toString('utf-8')
+          .replace('export default', 'module.exports =')
+      )
+    )
+  } else {
+    console.log('TransformNextConfig: nuxt.config.js not exist.')
+  }
+  zip.writeZip()
 }
 
 /**
@@ -300,7 +399,6 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
 
   // 对apigw inputs进行标准化
   const apigatewayConf = inputs.apigatewayConf ? inputs.apigatewayConf : {}
-  apigatewayConf.isDisabled = inputs.apigatewayConf === true
   apigatewayConf.fromClientRemark = fromClientRemark
   apigatewayConf.serviceName = inputs.serviceName
   apigatewayConf.description = `Serverless Framework Tencent-${capitalString(
@@ -317,7 +415,7 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
       serviceTimeout: apigatewayConf.serviceTimeout,
       method: 'ANY',
       function: {
-        isIntegratedResponse: apigatewayConf.isIntegratedResponse === false ? false : true,
+        isIntegratedResponse: true,
         functionName: functionConf.name,
         functionNamespace: functionConf.namespace,
         functionQualifier: functionConf.needSetTraffic ? '$DEFAULT' : '$LATEST'
@@ -410,5 +508,7 @@ module.exports = {
   capitalString,
   getDefaultProtocol,
   deleteRecord,
-  prepareInputs
+  prepareInputs,
+  prepareStaticCosInputs,
+  prepareStaticCdnInputs
 }

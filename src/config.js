@@ -9,7 +9,23 @@ const CONFIGS = {
   timeout: 3,
   memorySize: 128,
   namespace: 'default',
-  description: 'Created by Serverless Component'
+  description: 'Created by Serverless Component',
+  defaultStatics: [
+    { src: '.nuxt/dist/client', targetDir: '/' },
+    { src: 'static', targetDir: '/' }
+  ],
+  defaultCdnConf: {
+    autoRefresh: true,
+    forceRedirect: {
+      switch: 'on',
+      redirectType: 'https',
+      redirectStatusCode: 301
+    },
+    https: {
+      switch: 'on',
+      http2: 'on'
+    }
+  }
 }
 
 module.exports = CONFIGS
