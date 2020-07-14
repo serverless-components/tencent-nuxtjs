@@ -198,6 +198,7 @@ class ServerlessComopnent extends Component {
         const deployRes = await cos.deploy(curInputs)
         cosOutput.cosOrigin = `${curInputs.bucket}.cos.${region}.myqcloud.com`
         cosOutput.bucket = deployRes.bucket
+        cosOutput.url = `https://${curInputs.bucket}.cos.${region}.myqcloud.com`
         console.log(`Deploy directory ${curInputs.src} to cos bucket ${curInputs.bucket} success`)
       }
       deployStaticOutpus.cos = cosOutput
