@@ -1,5 +1,5 @@
 const { Component } = require('@serverless/core')
-const { MultiApigw, Scf, Apigw, Cns, Cam, Cos, Cdn } = require('tencent-component-toolkit')
+const { MultiApigw, Scf, Apigw, Cns, Cam, Metrics, Cos, Cdn } = require('tencent-component-toolkit')
 const { TypeError } = require('tencent-component-toolkit/src/utils/error')
 const {
   uploadCodeToCos,
@@ -358,6 +358,45 @@ class ServerlessComopnent extends Component {
     await this.removeStatic()
 
     this.state = {}
+  }
+
+  async metrics(inputs = {}) {
+    console.log(`Get ${CONFIGS.compFullname} Metrics Datas...`)
+    if (!inputs.rangeStart || !inputs.rangeEnd) {
+      throw new TypeError(
+        `PARAMETER_${CONFIGS.compName.toUppoerCase()}_METRICS`,
+        'rangeStart and rangeEnd are require inputs'
+      )
+    }
+    const { region } = this.state
+    if (!region) {
+      throw new TypeError(
+        `PARAMETER_${CONFIGS.compName.toUppoerCase()}_METRICS`,
+        'No region property in state'
+      )
+    }
+    const { functionName, namespace, functionVersion } = this.state[region] || {}
+    if (functionName) {
+      const options = {
+        funcName: functionName,
+        namespace: namespace,
+        version: functionVersion,
+        region,
+        timezone: inputs.tz
+      }
+      const credentials = this.getCredentials()
+      const mertics = new Metrics(credentials, options)
+      const metricResults = await mertics.getDatas(
+        inputs.rangeStart,
+        inputs.rangeEnd,
+        Metrics.Type.All
+      )
+      return metricResults
+    }
+    throw new TypeError(
+      `PARAMETER_${CONFIGS.compName.toUppoerCase()}_METRICS`,
+      'Function name not define'
+    )
   }
 }
 

@@ -1,24 +1,20 @@
-const path = require('path')
 const express = require('express')
 const { Nuxt } = require('nuxt')
 
-async function createServer(custom) {
-  const server = express()
-  // get next config
-  let configPath = path.join(__dirname, '..', 'nuxt.config.js')
-  if (custom) {
-    configPath = path.join(__dirname, 'nuxt.config.js')
-  }
-  const config = require(configPath)
-  config.dev = false
+async function createServer() {
+  // not report route for custom monitor
+  const noReportRoutes = ['/_nuxt', '/static', '/favicon.ico']
 
-  // Init Nuxt.js
-  const nuxt = new Nuxt(config)
+  const server = express()
+  const nuxt = new Nuxt({ dev: false })
   await nuxt.ready()
 
-  // Give nuxt middleware to express
-  // app.use(nuxt.render)
   server.all('*', (req, res, next) => {
+    noReportRoutes.forEach((route) => {
+      if (req.path.indexOf(route) === 0) {
+        req.__SLS_NO_REPORT__ = true
+      }
+    })
     return nuxt.render(req, res, next)
   })
 
