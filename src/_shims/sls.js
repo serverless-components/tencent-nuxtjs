@@ -1,13 +1,12 @@
 const express = require('express')
-const { Nuxt } = require('nuxt')
+const { loadNuxt } = require('nuxt')
 
 async function createServer() {
   // not report route for custom monitor
   const noReportRoutes = ['/_nuxt', '/static', '/favicon.ico']
 
   const server = express()
-  const nuxt = new Nuxt({ dev: false })
-  await nuxt.ready()
+  const nuxt = await loadNuxt('start')
 
   server.all('*', (req, res, next) => {
     noReportRoutes.forEach((route) => {

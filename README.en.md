@@ -112,29 +112,16 @@ Checkout the [Serverless Components](https://github.com/serverless/components) r
 If you had used `express` for you server, you should create entry file `sls.js`, please change depand on your server entry file, below is a template:
 
 ```js
-const path = require('path')
 const express = require('express')
-const { Nuxt } = require('nuxt')
+const { loadNuxt } = require('nuxt')
 
-// not report route for custom monitor
-const noReportRoutes = ['/_next', '/static']
+async function createServer() {
+  // not report route for custom monitor
+  const noReportRoutes = ['/_nuxt', '/static', '/favicon.ico']
 
-async function createServer(custom) {
   const server = express()
-  // get next config
-  let configPath = path.join(__dirname, '..', 'nuxt.config.js')
-  if (custom) {
-    configPath = path.join(__dirname, 'nuxt.config.js')
-  }
-  const config = require(configPath)
-  config.dev = false
+  const nuxt = await loadNuxt('start')
 
-  // Init Nuxt.js
-  const nuxt = new Nuxt(config)
-  await nuxt.ready()
-
-  // Give nuxt middleware to express
-  // app.use(nuxt.render)
   server.all('*', (req, res, next) => {
     noReportRoutes.forEach((route) => {
       if (req.path.indexOf(route) === 0) {

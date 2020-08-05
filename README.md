@@ -183,29 +183,16 @@ TENCENT_SECRET_KEY=123
 如果你的 Nuxt.js 项目本身运行就是基于 `express` 自定义服务的，那么你需要在项目中自定义入口文件 `sls.js`，需要参考你的服务启动文件进行修改，以下是一个模板文件：
 
 ```js
-const path = require('path')
 const express = require('express')
-const { Nuxt } = require('nuxt')
+const { loadNuxt } = require('nuxt')
 
-// not report route for custom monitor
-const noReportRoutes = ['/_next', '/static']
+async function createServer() {
+  // not report route for custom monitor
+  const noReportRoutes = ['/_nuxt', '/static', '/favicon.ico']
 
-async function createServer(custom) {
   const server = express()
-  // get next config
-  let configPath = path.join(__dirname, '..', 'nuxt.config.js')
-  if (custom) {
-    configPath = path.join(__dirname, 'nuxt.config.js')
-  }
-  const config = require(configPath)
-  config.dev = false
+  const nuxt = await loadNuxt('start')
 
-  // Init Nuxt.js
-  const nuxt = new Nuxt(config)
-  await nuxt.ready()
-
-  // Give nuxt middleware to express
-  // app.use(nuxt.render)
   server.all('*', (req, res, next) => {
     noReportRoutes.forEach((route) => {
       if (req.path.indexOf(route) === 0) {
