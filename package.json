@@ -1,6 +1,6 @@
 {
   "name": "@serverless/nuxtjs",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "src/serverless.js",
   "publishConfig": {
     "access": "public"
@@ -31,6 +31,7 @@
     "**/*.{css,html,js,json,md,yaml,yml}": [
       "npm run prettier:fix",
       "git add ."
+
     ]
   },
   "author": "Tencent Cloud, Inc.",
