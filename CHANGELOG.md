@@ -1,3 +1,10 @@
+## [0.0.14](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.0.13...v0.0.14) (2020-08-27)
+
+
+### Bug Fixes
+
+* optimize deploy flow ([2768d16](https://github.com/serverless-components/tencent-nuxtjs/commit/2768d16b50aeea7343dae468421cb7eaf9902f1c))
+
 ## [0.0.13](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.0.12...v0.0.13) (2020-08-26)
 
 
