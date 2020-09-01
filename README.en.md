@@ -2,7 +2,7 @@
 
 # Tencent Nuxt.js Serverless Component
 
-[简体中文](https://github.com/serverless-components/tencent-nuxtjs/blob/v2/README.md) | English
+[简体中文](./README.md) | English
 
 ## Introduction
 
@@ -65,7 +65,7 @@ stage: dev
 
 inputs:
   src:
-    src: ./src
+    src: ./
     exclude:
       - .env
   region: ap-guangzhou
@@ -77,7 +77,7 @@ inputs:
     environment: release
 ```
 
-- [More Options](https://github.com/serverless-components/tencent-nuxtjs/blob/v2/docs/configure.md)
+- [More Options](/docs/configure.md)
 
 ### 4. Deploy
 

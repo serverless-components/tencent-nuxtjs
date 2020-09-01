@@ -2,7 +2,7 @@
 
 # 腾讯云 Nuxt.js Serverless Component
 
-简体中文 | [English](https://github.com/serverless-components/tencent-nuxtjs/blob/v2/README.en.md)
+简体中文 | [English](./README.en.md)
 
 ## 简介
 
@@ -84,7 +84,7 @@ inputs:
     environment: release
 ```
 
-- 点此查看[更多配置及说明](https://github.com/serverless-components/tencent-nextjs/tree/v2/docs/configure.md)
+- 点此查看[更多配置及说明](/docs/configure.md)
 
 ### 3. 部署
 
