@@ -1,3 +1,10 @@
+# [0.1.0](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.0.14...v0.1.0) (2020-09-02)
+
+
+### Features
+
+* add mark for api request ([db0328f](https://github.com/serverless-components/tencent-nuxtjs/commit/db0328f498cd45d16e5bc1d6d17cdc5b5c860c42))
+
 ## [0.0.14](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.0.13...v0.0.14) (2020-08-27)
 
 
