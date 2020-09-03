@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.0...v0.1.1) (2020-09-03)
+
+
+### Bug Fixes
+
+* update deps ([1a883c5](https://github.com/serverless-components/tencent-nuxtjs/commit/1a883c56fe980aaa7bcc34043cabb99dc0f6cec8))
+
 # [0.1.0](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.0.14...v0.1.0) (2020-09-02)
 
 
