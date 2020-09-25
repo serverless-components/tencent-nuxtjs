@@ -40,3 +40,6 @@ jobs:
           npm update --save-dev --no-save
       - name: Running integration tests
         run: npm run test
+        env:
+          TENCENT_SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
+          TENCENT_SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
