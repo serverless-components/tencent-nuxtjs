@@ -2,8 +2,6 @@
 
 # 腾讯云 Nuxt.js Serverless Component
 
-简体中文 | [English](./README.en.md)
-
 ## 简介
 
 **腾讯云[Nuxt.js](https://github.com/nuxt/nuxt.js)组件** - 通过使用[**Tencent Serverless Framework**](https://github.com/serverless/components/tree/cloud) , 基于云上 Serverless 服务（如 API 网关、云函数等），实现“0”配置，便捷开发，极速部署采用 Nuxt.js 框架的网页应用，Nuxt.js 组件支持丰富的配置扩展，提供了目前便捷实用，开发成本低的网页应用项目的开发/托管能力。
@@ -84,7 +82,7 @@ inputs:
     environment: release
 ```
 
-- 点此查看[更多配置及说明](/docs/configure.md)
+- 点此查看[更多配置及说明](https://github.com/yugasun/tencent-nuxtjs/tree/master/docs/configure.md)
 
 ### 3. 部署
 
@@ -178,7 +176,11 @@ TENCENT_SECRET_KEY=123
 
 可以在 [Serverless Components](https://github.com/serverless/components) repo 中查询更多组件的信息。
 
-## 项目迁移 - 自定义 express 服务
+## 项目迁移
+
+如果项目使用了自定义 Node.js 服务，比如 express 或者 koa，你需要做如下改造工作。
+
+### 自定义 express 服务
 
 如果你的 Nuxt.js 项目本身运行就是基于 `express` 自定义服务的，那么你需要在项目中自定义入口文件 `sls.js`，需要参考你的服务启动文件进行修改，以下是一个模板文件：
 
@@ -212,14 +214,46 @@ async function createServer() {
 module.exports = createServer
 ```
 
+### 自定义 koa 服务
+
+如果你的项目使用的是 Koa 作为 Node.js 服务，需要在项目中自定义入口文件 `sls.js`，需要参考你的服务启动文件进行修改，以下是一个模板文件：
+
+```js
+const Koa = require('koa')
+const { loadNuxt } = require('nuxt')
+
+async function createServer() {
+  const server = new Koa()
+  const nuxt = await loadNuxt('start')
+
+  server.use((ctx) => {
+    ctx.status = 200
+    ctx.respond = false
+    ctx.req.ctx = ctx
+
+    nuxt.render(ctx.req, ctx.res)
+  })
+
+  // define binary type for response
+  // if includes, will return base64 encoded, very useful for images
+  server.binaryTypes = ['*/*']
+
+  return server
+}
+
+module.exports = createServer
+```
+
 ## 自定义监控
+
+> **目前仅支持自定义 `Express` 服务的项目**
 
 当在部署 Nuxt.js 应用时，如果 `serverless.yml` 中未指定 `role`，默认会尝试绑定 `QCS_SCFExcuteRole`，并且开启自定义监控，帮助用户收集应用监控指标。对于为自定义入口文件的项目，会默认上报除含有 `/_nuxt`、`/static` 和 `/favicon.ico` 的路由。如果你想自定义上报自己的路由性能，那么可以自定义 `sls.js` 入口文件，对于无需上报的路由，在 express 服务的 `req` 对象上添加 `__SLS_NO_REPORT__` 属性值为 `true` 即可。比如：
 
 ```js
-server.get('/no-report', (req, res) => {
+server.get('/no-report', (req, res, next) => {
   req.__SLS_NO_REPORT__ = true
-  return handle(req, res)
+  return nuxt.render(req, res, next)
 })
 ```
 
