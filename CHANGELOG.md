@@ -1,3 +1,10 @@
+## [0.1.3](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.2...v0.1.3) (2020-09-25)
+
+
+### Bug Fixes
+
+* support koa server ([#9](https://github.com/serverless-components/tencent-nuxtjs/issues/9)) ([70d1564](https://github.com/serverless-components/tencent-nuxtjs/commit/70d15643902dcca3111501c12fe7837525a13772))
+
 ## [0.1.1](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.0...v0.1.1) (2020-09-03)
 
 
