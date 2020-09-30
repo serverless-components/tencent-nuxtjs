@@ -3,6 +3,7 @@ const CONFIGS = {
     'https://serverless-templates-1300862921.cos.ap-beijing.myqcloud.com/nuxtjs-demo.zip',
   compName: 'nuxtjs',
   compFullname: 'Nuxt.js',
+  defaultEntryFile: 'sls.js',
   region: 'ap-guangzhou',
   handler: 'sl_handler.handler',
   runtime: 'Nodejs10.15',

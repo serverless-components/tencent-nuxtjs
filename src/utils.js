@@ -326,7 +326,7 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
   // chenck state function name
   const stateFunctionName =
     instance.state[regionList[0]] && instance.state[regionList[0]].functionName
-  const functionConf = {
+  const functionConf = Object.assign(tempFunctionConf, {
     code: {
       src: inputs.src,
       bucket: inputs.srcOriginal && inputs.srcOriginal.bucket,
@@ -366,14 +366,12 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
     publish: inputs.publish,
     traffic: inputs.traffic,
     lastVersion: instance.state.lastVersion,
-    eip: tempFunctionConf.eip === true,
-    l5Enable: tempFunctionConf.l5Enable === true,
     timeout: tempFunctionConf.timeout ? tempFunctionConf.timeout : CONFIGS.timeout,
     memorySize: tempFunctionConf.memorySize ? tempFunctionConf.memorySize : CONFIGS.memorySize,
     tags: ensureObject(tempFunctionConf.tags ? tempFunctionConf.tags : inputs.tag, {
       default: null
     })
-  }
+  })
 
   // validate traffic
   if (inputs.traffic !== undefined) {
@@ -382,15 +380,25 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
   functionConf.needSetTraffic = inputs.traffic !== undefined && functionConf.lastVersion
 
   if (tempFunctionConf.environment) {
-    functionConf.environment = inputs.functionConf.environment
+    functionConf.environment = tempFunctionConf.environment
+    functionConf.environment.variables = functionConf.environment.variables || {}
+    functionConf.environment.variables.SERVERLESS = '1'
+    functionConf.environment.variables.SLS_ENTRY_FILE = inputs.entryFile || CONFIGS.defaultEntryFile
+  } else {
+    functionConf.environment = {
+      variables: {
+        SERVERLESS: '1',
+        SLS_ENTRY_FILE: inputs.entryFile || CONFIGS.defaultEntryFile
+      }
+    }
   }
   if (tempFunctionConf.vpcConfig) {
-    functionConf.vpcConfig = inputs.functionConf.vpcConfig
+    functionConf.vpcConfig = tempFunctionConf.vpcConfig
   }
 
   // 对apigw inputs进行标准化
   const tempApigwConf = inputs.apigatewayConf ? inputs.apigatewayConf : {}
-  const apigatewayConf = {
+  const apigatewayConf = Object.assign(tempApigwConf, {
     serviceId: inputs.serviceId,
     region: regionList,
     isDisabled: tempApigwConf.isDisabled === true,
@@ -413,7 +421,7 @@ const prepareInputs = async (instance, credentials, inputs = {}) => {
       }
     ],
     customDomains: tempApigwConf.customDomains || []
-  }
+  })
   if (tempApigwConf.usagePlan) {
     apigatewayConf.endpoints[0].usagePlan = {
       usagePlanId: tempApigwConf.usagePlan.usagePlanId,
