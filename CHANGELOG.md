@@ -1,3 +1,10 @@
+## [0.1.4](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.3...v0.1.4) (2020-10-10)
+
+
+### Bug Fixes
+
+* support customize entry file ([50ace57](https://github.com/serverless-components/tencent-nuxtjs/commit/50ace57900ebf9b4f405ec38204eb85a78e7aa77))
+
 ## [0.1.3](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.2...v0.1.3) (2020-09-25)
 
 
