@@ -1,3 +1,10 @@
+## [0.1.5](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.4...v0.1.5) (2020-10-12)
+
+
+### Bug Fixes
+
+* support all parameters for apigw ([15805a6](https://github.com/serverless-components/tencent-nuxtjs/commit/15805a6b74751407e217ee5bb80dc3e127f92842))
+
 ## [0.1.4](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.3...v0.1.4) (2020-10-10)
 
 
