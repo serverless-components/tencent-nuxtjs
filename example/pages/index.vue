@@ -2,12 +2,13 @@
   <div class="container">
     <div>
       <logo />
-      <h1 class="title">nuxt-demo</h1>
-      <h2 class="subtitle">Serverless Nuxt.js Application Created By Serverless Framework</h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green">Documentation</a>
-        <a href="https://github.com/nuxt/nuxt.js" target="_blank" class="button--grey">GitHub</a>
-      </div>
+      <h1 class="title">Welcome to Nuxt.js</h1>
+      <h2 class="subtitle">
+        The SSR app is hosted on
+        <a href="https://cloud.tencent.com/product/ssr" target="_blank" rel="noopener noreferrer">
+          Serverless SSR
+        </a>
+      </h2>
     </div>
   </div>
 </template>
