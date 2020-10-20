@@ -17,3 +17,12 @@ inputs:
       - http
       - https
     environment: release
+  staticConf:
+    cosConf:
+      replace: true
+      bucket: nuxtjs-demo
+      sources:
+        - src: .nuxt/dist/client
+          targetDir: /
+        - src: static
+          targetDir: /
