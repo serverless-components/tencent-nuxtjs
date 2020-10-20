@@ -1,3 +1,10 @@
+## [0.1.6](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.5...v0.1.6) (2020-10-20)
+
+
+### Bug Fixes
+
+* support replace deployment ([31b29c7](https://github.com/serverless-components/tencent-nuxtjs/commit/31b29c7dd0b72e8517736810e775b8ed1847dc90))
+
 ## [0.1.5](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.4...v0.1.5) (2020-10-12)
 
 
