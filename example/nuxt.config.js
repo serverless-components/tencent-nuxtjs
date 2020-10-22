@@ -1,5 +1,4 @@
 export default {
-  mode: 'universal',
   env: {
     STATIC_URL: process.env.STATIC_URL || ''
   },
@@ -27,7 +26,9 @@ export default {
         content: 'Serverless Nuxt.js Application Created By Serverless Framework'
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: `${process.env.STATIC_URL}/favicon.ico` }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: `${process.env.STATIC_URL || ''}/favicon.ico` }
+    ]
   },
   /*
    ** Customize the progress-bar color

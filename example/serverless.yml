@@ -21,8 +21,3 @@ inputs:
     cosConf:
       replace: true
       bucket: nuxtjs-demo
-      sources:
-        - src: .nuxt/dist/client
-          targetDir: /
-        - src: static
-          targetDir: /
