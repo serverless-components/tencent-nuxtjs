@@ -31,19 +31,6 @@
 - [**更多组件**](#更多组件)
 - [**FAQ**](#FAQ)
 
-### 0. 准备
-
-#### 初始化 Nuxt.js 项目
-
-首先，在本地创建根目录，并初始化一个 Nuxt.js 项目
-
-```bash
-$ npx create-nuxt-app serverless-nuxtjs
-$ cd serverless-nuxtjs
-```
-
-> 注意：本教程中的 Nuxt 项目使用 JavaScript 与 Npm 安装包进行构建，初始化项目的时候请选择相应的选项
-
 ### 1. 安装
 
 通过 npm 全局安装 [serverless cli](https://github.com/serverless/serverless)
@@ -52,13 +39,31 @@ $ cd serverless-nuxtjs
 $ npm install -g serverless
 ```
 
-### 2. 配置
+### 2. 创建
 
-在项目根目录创建 `serverless.yml` 文件，在其中进行如下配置
+通过如下命令和模板链接，快速创建一个 nuxtjs 应用：
 
 ```bash
-$ touch serverless.yml
+$ serverless init nuxtjs-starter --name example
+$ cd example
 ```
+
+### 3. 部署
+
+在 `serverless.yml` 文件所在的项目根目录，运行以下指令，将会弹出二维码，直接扫码授权进行部署：
+
+```
+serverless deploy
+```
+
+> **说明**：如果鉴权失败，请参考 [权限配置](https://cloud.tencent.com/document/product/1154/43006) 进行授权。
+
+
+### 4. 配置
+
+nuxtjs 组件支持 0 配置部署，也就是可以直接通过配置文件中的默认值进行部署。但你依然可以修改更多可选配置来进一步开发该 nuxtjs 项目。
+
+以下是 nuxtjs 组件的 `serverless.yml`配置示例：
 
 ```yml
 # serverless.yml
@@ -84,46 +89,6 @@ inputs:
 
 - 点此查看[更多配置及说明](https://github.com/yugasun/tencent-nuxtjs/tree/master/docs/configure.md)
 
-### 3. 部署
-
-#### 3.1 构建静态资源
-
-进入到 nuxt 项目目录下，构建静态资源
-
-```bash
-$ cd src && npm run build
-```
-
-#### 3.2 部署到云端
-
-回到在 serverless.yml 文件所在的项目根目录，运行以下指令进行部署：
-
-```bash
-# 进入项目根目录 serverless-nuxtjs
-$ sls deploy
-
-serverless ⚡ framework
-Action: "deploy" - Stage: "dev" - App: "appDemo" - Instance: "nuxtjsDemo"
-
-region: ap-guangzhou
-apigw:
-  serviceId:   service-4v2jx72g
-  subDomain:   service-4v2jx72g-1258834142.gz.apigw.tencentcs.com
-  environment: release
-  url:         https://xxxxxx.gz.apigw.tencentcs.com/release/
-scf:
-  functionName: nuxtjs_component_mm518kl
-  runtime:      Nodejs10.15
-  namespace:    default
-
-139s › nuxtjsDemo › Success
-```
-
-部署时需要进行身份验证，如您的账号未 [登陆](https://cloud.tencent.com/login) 或 [注册](https://cloud.tencent.com/register) 腾讯云，您可以直接通过 `微信` 扫描命令行中的二维码进行授权登陆和注册。
-
-> 注意: 如果希望查看更多部署过程的信息，可以通过`sls deploy --debug` 命令查看部署过程中的实时日志信息，`sls`是 `serverless` 命令的缩写。
-> `sls` 是 `serverless` 命令的简写。
-
 ### 4. 开发调试
 
 部署了 Nuxt.js 应用后，可以通过开发调试能力对该项目进行二次开发，从而开发一个生产应用。在本地修改和更新代码后，不需要每次都运行 `serverless deploy` 命令来反复部署。你可以直接通过 `serverless dev` 命令对本地代码的改动进行检测和自动上传。
@@ -145,10 +110,10 @@ $ serverless info
 在`serverless.yml`文件所在的目录下，通过以下命令移除部署通过以下命令移除部署的 API 网关，移除后该组件会对应删除云上部署时所创建的所有相关资源。
 
 ```bash
-$ sls remove
+$ serverless remove
 ```
 
-和部署类似，支持通过 `sls remove --debug` 命令查看移除过程中的实时日志信息，`sls`是 `serverless` 命令的缩写。
+和部署类似，支持通过 `serverless remove --debug` 命令查看移除过程中的实时日志信息，`serverless`是 `serverless` 命令的缩写。
 
 ### 账号配置
 
@@ -170,7 +135,7 @@ TENCENT_SECRET_ID=123
 TENCENT_SECRET_KEY=123
 ```
 
-> 注意：海外 ip 登录时，需要在`.env`文件中添加`SERVERLESS_PLATFORM_VENDOR=tencent` ，使 sls 默认使用 tencent 组件
+> 注意：海外 ip 登录时，需要在`.env`文件中添加`SERVERLESS_PLATFORM_VENDOR=tencent` ，使 serverless 默认使用 tencent 组件
 
 ## 更多组件
 
