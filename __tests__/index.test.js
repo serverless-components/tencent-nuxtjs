@@ -1,15 +1,11 @@
 require('dotenv').config()
-const { generateId, getServerlessSdk } = require('./utils')
+const { generateId, getServerlessSdk } = require('./lib/utils')
 const axios = require('axios')
 
-// set enough timeout for deployment to finish
-jest.setTimeout(600000)
-
-// the yaml file we're testing against
 const instanceYaml = {
   org: 'orgDemo',
   app: 'appDemo',
-  component: 'nuxtjs',
+  component: 'nuxtjs@dev',
   name: `nuxtjs-integration-tests-${generateId()}`,
   stage: 'dev',
   inputs: {
@@ -19,7 +15,6 @@ const instanceYaml = {
   }
 }
 
-// get credentials from process.env but need to init empty credentials object
 const credentials = {
   tencent: {
     SecretId: process.env.TENCENT_SECRET_ID,
@@ -27,7 +22,6 @@ const credentials = {
   }
 }
 
-// get serverless construct sdk
 const sdk = getServerlessSdk(instanceYaml.org)
 
 it('should successfully deploy nuxtjs app', async () => {
