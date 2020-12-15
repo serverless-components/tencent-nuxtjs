@@ -1,3 +1,10 @@
+## [0.1.7](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.6...v0.1.7) (2020-12-15)
+
+
+### Bug Fixes
+
+* update to deployment to serial flow ([850dafe](https://github.com/serverless-components/tencent-nuxtjs/commit/850dafe6dcb89bdc9fdcc85affff27c62b05e90b))
+
 ## [0.1.6](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.5...v0.1.6) (2020-10-20)
 
 
