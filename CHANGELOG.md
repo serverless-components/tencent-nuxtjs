@@ -1,3 +1,10 @@
+## [0.1.8](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.7...v0.1.8) (2020-12-21)
+
+
+### Bug Fixes
+
+* update remove flow ([#17](https://github.com/serverless-components/tencent-nuxtjs/issues/17)) ([96879d4](https://github.com/serverless-components/tencent-nuxtjs/commit/96879d4d541a5598cafc1acb91dcacf0a62871ed))
+
 ## [0.1.7](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.6...v0.1.7) (2020-12-15)
 
 
