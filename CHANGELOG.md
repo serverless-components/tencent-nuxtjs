@@ -1,3 +1,10 @@
+# [0.2.0](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.8...v0.2.0) (2021-01-25)
+
+
+### Features
+
+* support apigw base64 encode ([ef3d53c](https://github.com/serverless-components/tencent-nuxtjs/commit/ef3d53c19d61dc0a952290f3c2cb84c767f8135e))
+
 ## [0.1.8](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.7...v0.1.8) (2020-12-21)
 
 
