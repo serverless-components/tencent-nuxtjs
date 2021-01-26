@@ -86,7 +86,7 @@ inputs:
     environment: release
 ```
 
-- 点此查看[更多配置及说明](https://github.com/yugasun/tencent-nuxtjs/tree/master/docs/configure.md)
+- 点此查看[更多配置及说明](https://github.com/serverless-components/tencent-nuxtjs/tree/master/docs/configure.md)
 
 ### 4. 开发调试
 
@@ -222,6 +222,10 @@ server.get('/no-report', (req, res, next) => {
 ```
 
 那么用户在访问 `GET /no-report` 路由时，就不会上报自定义监控指标。
+
+## 文件上传
+
+[文件上传教程](https://github.com/serverless-components/tencent-nuxtjs/tree/master/docs/upload.md)
 
 ## License
 
