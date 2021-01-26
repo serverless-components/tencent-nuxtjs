@@ -22,10 +22,8 @@ inputs:
 
 此 Github 项目的 `example` 目录下存在两个模板文件：
 
-```
-sls.express.js
-sls.koa.js
-```
+- [sls.express.js](../example/sls.express.js)
+- [sls.koa.js](../example/sls.koa.js)
 
 开发者可根据个人项目需要参考修改，使用时需要复制对应文件名为 `sls.js`。
 
