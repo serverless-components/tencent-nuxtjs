@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.2.0...v0.2.1) (2021-01-26)
+
+
+### Bug Fixes
+
+* change cos access by policy ([7884f8d](https://github.com/serverless-components/tencent-nuxtjs/commit/7884f8de205951956861bfcda6e1a892e1b18018))
+
 # [0.2.0](https://github.com/serverless-components/tencent-nuxtjs/compare/v0.1.8...v0.2.0) (2021-01-25)
 
 
